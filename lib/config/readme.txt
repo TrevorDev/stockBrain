@@ -1,0 +1,1 @@
+config.go goes here to define config settings

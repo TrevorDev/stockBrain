@@ -1,16 +1,20 @@
 package main
 
 import (
-	//"github.com/TrevorDev/go-finance"
+	"github.com/TrevorDev/go-finance"
 	"net/http"
-	//"fmt"
+	"fmt"
 	"github.com/gorilla/mux"
 	//"bufio"
 	//"os"
-	//"log"
+	"log"
 	"html/template"
+	"time"
 	"./lib/render"
 	"./lib/socket"
+	"./lib/config"
+	_ "github.com/lib/pq"
+	"database/sql"
 )
 
 func runServer() {
@@ -26,8 +30,32 @@ func runServer() {
     http.ListenAndServe(":3000", nil)
 }
 
+func pullStocks() {
+	db, err := sql.Open("postgres", config.DatabaseUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rows, err := db.Query("SELECT last_trade_price FROM stock_snapshot where stock_name = 'GOOG'")
+	fmt.Println(err)
+	fmt.Println(rows.Columns())
+	rows.Next()
+	var price float32
+	rows.Scan(&price)
+	fmt.Println(price)
+	for {
+		time.Sleep(5 * time.Second)
+		out, err := finance.GetStockInfo([]string{"GOOG", "MSFT"},[]string{finance.Last_Trade_Price_Only,finance.Price_Per_Earning_Ratio,finance.More_Info })
+	 	if(err!=nil){
+	 		fmt.Println(err)
+	 	}else{
+	 		fmt.Println(out)
+	 	}
+	}
+}
+
 func main() {
-	runServer();
+	go runServer()
+	pullStocks()
 	/*fmt.Println("To stop enter q!")
 	reader := bufio.NewReader(os.Stdin)
  	out, err := finance.GetStockInfo([]string{"GOOG", "MSFT"},[]string{finance.Last_Trade_Price_Only,finance.Price_Per_Earning_Ratio,finance.More_Info })
