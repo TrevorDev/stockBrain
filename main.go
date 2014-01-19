@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/TrevorDev/go-finance"
+	//"github.com/TrevorDev/go-finance"
 	"net/http"
-	"fmt"
+	//"fmt"
 	"github.com/gorilla/mux"
-	"bufio"
-	"os"
+	//"bufio"
+	//"os"
 	//"log"
+	"html/template"
 	"./lib/render"
 	"./lib/socket"
 )
@@ -26,8 +27,8 @@ func runServer() {
 }
 
 func main() {
-	go runServer();
-	fmt.Println("To stop enter q!")
+	runServer();
+	/*fmt.Println("To stop enter q!")
 	reader := bufio.NewReader(os.Stdin)
  	out, err := finance.GetStockInfo([]string{"GOOG", "MSFT"},[]string{finance.Last_Trade_Price_Only,finance.Price_Per_Earning_Ratio,finance.More_Info })
  	if(err!=nil){
@@ -38,11 +39,11 @@ func main() {
 	for input, _ := reader.ReadString('\n'); input != "q\n"; input, _ = reader.ReadString('\n') {
 		fmt.Println(input)
 		fmt.Println("hit3")
-	}
+	}*/
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	render.RenderView(w, "index.html", map[string] string {"Title": "My title", "Body": "Hi this is my body"});
+	render.RenderView(w, "index.html", map[string] interface {} {"Title": "My title", "Body": "Hi this is my body","WsUrl": template.HTML("ws://"+r.Host+"/ws")});
 }
 
 func publicHandler(w http.ResponseWriter, r *http.Request) {

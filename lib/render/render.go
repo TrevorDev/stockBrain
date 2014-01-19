@@ -6,10 +6,17 @@ import (
 	//"log"
 )
 
-func RenderView(w http.ResponseWriter, fileLocation string, templateMap map[string] string) {
-	t, _ := template.ParseFiles("view/"+fileLocation)
-	//log.Println("HIT!")
-	//w.Write([]byte("Hello "))
+const tmpl = `<html>
+    <head>
+        <title>{{.Title}}  {{.WsUrl}}</title>
+    </head>
+    <body>
+        {{.Body}}
+    </body>
+</html>`
+
+func RenderView(w http.ResponseWriter, fileLocation string, templateMap map[string] interface {}) {
+	t := template.Must(template.ParseFiles("view/"+fileLocation))
 	t.Execute(w, templateMap)
 }
 

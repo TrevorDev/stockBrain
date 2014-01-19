@@ -14,6 +14,7 @@ type connection struct {
 }
 
 func (c *connection) reader() {
+	h.broadcast <- []byte("yes")
 	for {
 		_, message, err := c.ws.ReadMessage()
 		if err != nil {
