@@ -76,94 +76,94 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="/public/vendor/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/public/vendor/jquery/jquery-1.10.2.min.map"></script>
     <script src="/public/vendor/bootstrap/assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/public/vendor/flot/jquery.flot.js"></script>
 	<script type="text/javascript">
 	    $(function() {
-
-	    	
-	    $.get( "/api/stock/price/GOOG/5", function( data ) {
-	    	console.log(data);
-		  var obj = JSON.parse(data);
-		  console.log(obj);
-		});
-
-	    var conn;
-	    //conn.send(msg.val());
-	    if (window["WebSocket"]) {
-	        conn = new WebSocket({{.WsUrl}});
-	        conn.onclose = function(evt) {
-	            console.log($("Connection closed."))
-	        }
-	        conn.onmessage = function(evt) {
-	        	console.log(evt.data);
-	        }
-	    } else {
-	        console.log($("Your browser does not support WebSockets."))
-	    }
-
-
-
-
-		var data = [],
-			totalPoints = 10;
-		var updateInterval = 100;		
-		var plot = $.plot("#placeholder", [ getStartData() ], {
-			series: {
-				shadowSize: 0	// Drawing is faster without shadows
-			},
-			yaxis: {
-				min: 0,
-				max: 100
-			},
-			xaxis: {
-				show: false
-			}
-		});
-		function getStartData() {
-			if (data.length > 0)
-				data = data.slice(1);
-			while (data.length < totalPoints) {
-				var prev = data.length > 0 ? data[data.length - 1] : 50,
-					y = prev + Math.random() * 10 - 5;
-				if (y < 0) {
-					y = 0;
-				} else if (y > 100) {
-					y = 100;
+	    	function getStartData() {
+				if (data.length > 0)
+					data = data.slice(1);
+				while (data.length < totalPoints) {
+					var prev = data.length > 0 ? data[data.length - 1] : 50,
+						y = prev + Math.random() * 10 - 5;
+					if (y < 0) {
+						y = 0;
+					} else if (y > 100) {
+						y = 100;
+					}
+					data.push(y);
 				}
-				data.push(y);
+				var res = [];
+				for (var i = 0; i < data.length; ++i) {
+					res.push([i, data[i]])
+				}
+				return res;
 			}
-			var res = [];
-			for (var i = 0; i < data.length; ++i) {
-				res.push([i, data[i]])
+
+			function addData(data, p) {
+				data = data.slice(1);
+				data.push(p)
+				var res = [];
+				return data;
 			}
-			return res;
-		}
 
-		function addData(p) {
-			data = data.slice(1);
-			data.push(p)
-			var res = [];
-			for (var i = 0; i < data.length; ++i) {
-				res.push([i, data[i]])
+			function prepare(data){
+				var res = [];
+				for (var i = 0; i < data.length; ++i) {
+					res.push([i, data[i]])
+				}
+				return res;
 			}
-			return res;
-		}
 
-		
-		var x = 0;
-		function update() {
-			plot.setData([addData(x++)]);
-			plot.getOptions().yaxes[0].max=Math.max.apply(null, data)+5;
-			plot.getOptions().yaxes[0].min=(Math.min.apply(null, data)-5) >= 0 ? (Math.min.apply(null, data)-5) : 0;
-			plot.setupGrid()
-			plot.draw();
-			setTimeout(update, updateInterval);
-		}
+			function getInitPoints(success,failure){
+				$.get( "/api/stock/price/{{.Symbol}}/10", function( resp ) {
+				  	success(resp.Prices.reverse());
+				});
+			}
+		    //var conn;
+		    //conn.send(msg.val());
+		    /*if (window["WebSocket"]) {
+		        conn = new WebSocket({{.WsUrl}});
+		        conn.onclose = function(evt) {
+		            console.log($("Connection closed."))
+		        }
+		        conn.onmessage = function(evt) {
+		        	console.log(evt.data);
+		        }
+		    } else {
+		        console.log($("Your browser does not support WebSockets."))
+		    }*/
+		    getInitPoints(function(data){
+				var totalPoints = 10,
+					x = 0.
+					updateInterval = 100;
+					console.log(prepare(data))
+				var plot = $.plot("#placeholder", [ prepare(data) ], {
+					series: {
+						shadowSize: 0	// Drawing is faster without shadows
+					},
+					yaxis: {
+						min: 0,
+						max: 100
+					},
+					xaxis: {
+						show: false
+					}
+				});
 
-		update();
-	});
+				function update() {
+					//data = addData(data,1160);
+					plot.setData([prepare(data)]);
+					plot.getOptions().yaxes[0].max=Math.max.apply(null, data)+5;
+					plot.getOptions().yaxes[0].min=(Math.min.apply(null, data)-5) >= 0 ? (Math.min.apply(null, data)-5) : 0;
+					plot.setupGrid()
+					plot.draw();
+					setTimeout(update, updateInterval);
+				}
+				update();
+			})
+		});
 	</script>
   </body>
 </html>
