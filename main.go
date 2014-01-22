@@ -31,7 +31,7 @@ func runServer() {
     r.HandleFunc("/api/stock/price/{symbol}/{limit}", stockApiCtrl.StockPriceHandler)
 
     http.Handle("/", r)
-    http.ListenAndServe(":3000", nil)
+    http.ListenAndServe(":3004", nil)
 }
 
 func main() {
