@@ -6,7 +6,7 @@ import (
 	"time"
 	"./../lib/database"
 	"./../lib/config"
-	//"./../lib/socket"
+	"./../lib/socket"
 	"database/sql"
 	"strconv"
 )
@@ -89,15 +89,15 @@ func  (m Stock)PullStocks() {
 			if(true){
 				stockInfo := (Stock{}).QueryStocks()
 		 		for k, _ := range stockInfo {
-		 			//socket.SendStock(k, stockInfo[k][finance.Last_Trade_Price_Only])
+		 			socket.SendStock(k, stockInfo[k][finance.Last_Trade_Price_Only])
 		 			smartPrice := (Stock{}).GetAvg(k, 30)
 		 			buy := 0;
 		 			stockPriceVal, _ := strconv.ParseFloat(stockInfo[k][finance.Last_Trade_Price_Only],32)
 		 			if float32(stockPriceVal) < smartPrice {
-		 				//socket.SendStock(k, "buy")
+		 				socket.SendStock(k, "buy")
 		 				buy = 1;
 	 				}else{
-	 					//socket.SendStock(k, "sell")
+	 					socket.SendStock(k, "sell")
 	 				}
 		 			db.Exec("INSERT INTO stock_snapshot (stock_name, last_trade_price, price_per_earning, recommend_buy) VALUES ($1, $2, $3, $4)", k, stockInfo[k][finance.Last_Trade_Price_Only], stockInfo[k][finance.Price_Per_Earning_Ratio],buy)
 		 		}
