@@ -86,7 +86,7 @@ func  (m Stock)PullStocks() {
 		log.Println(err)
 	}else{
 		for {
-			if(true){
+			if(stockMarketOpen()){
 				stockInfo := (Stock{}).QueryStocks()
 		 		for k, _ := range stockInfo {
 		 			socket.SendStock(k, stockInfo[k][finance.Last_Trade_Price_Only])
@@ -102,7 +102,7 @@ func  (m Stock)PullStocks() {
 		 			db.Exec("INSERT INTO stock_snapshot (stock_name, last_trade_price, price_per_earning, recommend_buy) VALUES ($1, $2, $3, $4)", k, stockInfo[k][finance.Last_Trade_Price_Only], stockInfo[k][finance.Price_Per_Earning_Ratio],buy)
 		 		}
 		 	}
-		 	time.Sleep(5 * time.Second)
+		 	time.Sleep(120 * time.Second)
 		}	
 	}
 }
