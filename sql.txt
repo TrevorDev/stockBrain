@@ -1,0 +1,20 @@
+-- Table: stock_snapshot
+
+-- DROP TABLE stock_snapshot;
+
+CREATE TABLE stock_snapshot
+(
+  id integer NOT NULL DEFAULT nextval('"StockSnapshot_id_seq"'::regclass),
+  stock_name text NOT NULL,
+  last_trade_price double precision NOT NULL,
+  price_per_earning double precision NOT NULL,
+  time_stamp timestamp without time zone NOT NULL DEFAULT now(),
+  recommend_buy boolean NOT NULL DEFAULT false,
+  CONSTRAINT "StockSnapshot_pkey" PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE stock_snapshot
+  OWNER TO twoygliaufejuw;
+
