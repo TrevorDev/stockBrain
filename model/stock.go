@@ -6,6 +6,7 @@ import (
 	"time"
 	"./../lib/database"
 	"./../lib/config"
+	"./../lib/socket"
 	"database/sql"
 )
 
@@ -39,7 +40,8 @@ func (m Stock)QueryStocks()map[string] map[string] string {
 	}
 }
 
-func  (m Stock)StockMarketOpen(t time.Time)bool {
+func  stockMarketOpen()bool {
+	t := time.Now()
 	if (t.Weekday() >= 1 && t.Weekday() <= 5) && ((t.Hour() > 9 && t.Hour() <= 15) || (t.Hour() == 9 && t.Minute() >= 30)) {
 		return true
 	}else{
@@ -53,12 +55,13 @@ func  (m Stock)PullStocks() {
 		log.Println(err)
 	}
 	for {
-		if(true){
+		if(stockMarketOpen()){
 			stockInfo := (Stock{}).QueryStocks()
 	 		for k, _ := range stockInfo {
+	 			socket.SendStock(k, stockInfo[k][finance.Last_Trade_Price_Only])
 	 			db.Exec("INSERT INTO stock_snapshot (stock_name, last_trade_price, price_per_earning) VALUES ($1, $2, $3)", k, stockInfo[k][finance.Last_Trade_Price_Only], stockInfo[k][finance.Price_Per_Earning_Ratio])
 	 		}
 	 	}
-	 	time.Sleep(120 * time.Second)
+	 	time.Sleep(60 * time.Second)
 	}
 }

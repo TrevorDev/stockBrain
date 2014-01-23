@@ -10,24 +10,6 @@
 
     <title>Stock Brain</title>
 
-	<script type="text/javascript">
-	    $(function() {
-	    var conn;
-	    //conn.send(msg.val());
-	    if (window["WebSocket"]) {
-	        conn = new WebSocket({{.WsUrl}});
-	        conn.onclose = function(evt) {
-	            console.log($("Connection closed."))
-	        }
-	        conn.onmessage = function(evt) {
-	        	console.log(evt.data);
-	        }
-	    } else {
-	        console.log($("Your browser does not support WebSockets."))
-	    }
-	    });
-	</script>
-
     <!-- Bootstrap core CSS -->
     <link href="/public/vendor/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
 

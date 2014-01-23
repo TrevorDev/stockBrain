@@ -1,5 +1,7 @@
 package socket
 
+import "strings"
+
 type hub struct {
 	// Registered connections.
 	connections map[*connection]bool
@@ -25,6 +27,10 @@ func GetHub() *hub {
 	return &h
 }
 
+func SendStock(symbol string, price string) {
+	h.broadcast <- []byte(symbol+","+ price)
+}
+
 func (h *hub) Run() {
 	for {
 		select {
@@ -34,13 +40,16 @@ func (h *hub) Run() {
 			delete(h.connections, c)
 			close(c.send)
 		case m := <-h.broadcast:
+			split := strings.Split(string(m),",")
 			for c := range h.connections {
-				select {
-				case c.send <- m:
-				default:
-					delete(h.connections, c)
-					close(c.send)
-					go c.ws.Close()
+				if c.symbol == split[0] {
+					select {
+					case c.send <- []byte(split[1]):
+					default:
+						delete(h.connections, c)
+						close(c.send)
+						go c.ws.Close()
+					}
 				}
 			}
 		}

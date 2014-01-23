@@ -121,19 +121,7 @@
 				  	success(resp.Prices.reverse());
 				});
 			}
-		    //var conn;
-		    //conn.send(msg.val());
-		    /*if (window["WebSocket"]) {
-		        conn = new WebSocket({{.WsUrl}});
-		        conn.onclose = function(evt) {
-		            console.log($("Connection closed."))
-		        }
-		        conn.onmessage = function(evt) {
-		        	console.log(evt.data);
-		        }
-		    } else {
-		        console.log($("Your browser does not support WebSockets."))
-		    }*/
+		    
 		    getInitPoints(function(data){
 				var totalPoints = 10,
 					x = 0.
@@ -151,6 +139,20 @@
 						show: false
 					}
 				});
+
+				var conn;
+			    //conn.send(msg.val());
+			    if (window["WebSocket"]) {
+			        conn = new WebSocket({{.WsUrl}});
+			        conn.onclose = function(evt) {
+			            console.log($("Connection closed."))
+			        }
+			        conn.onmessage = function(evt) {
+			        	data = addData(data,parseFloat(evt.data));
+			        }
+			    } else {
+			        console.log($("Your browser does not support WebSockets."))
+			    }
 
 				function update() {
 					//data = addData(data,1160);

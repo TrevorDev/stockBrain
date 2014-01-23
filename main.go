@@ -25,7 +25,7 @@ func runServer() {
 	r := mux.NewRouter()
     r.HandleFunc("/", homeCtrl.HomeHandler)
     r.HandleFunc("/stock/{symbol}", stockCtrl.StockHandler)
-    r.HandleFunc("/ws", socket.WsHandler)
+    r.HandleFunc("/ws/{symbol}", socket.WsHandler)
     r.HandleFunc("/public/{file:.*}", publicCtrl.PublicHandler)
 
     r.HandleFunc("/api/stock/price/{symbol}/{limit}", stockApiCtrl.StockPriceHandler)
