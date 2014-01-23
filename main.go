@@ -40,6 +40,7 @@ func main() {
 	go runServer()
 	database.InitDatabase()
 	startTime := time.Now()
+	stock.BuyRecommend("GOOG")
 	stock.PullStocks()
 	fmt.Println("stockBrain started - "+strconv.Itoa(startTime.Hour()))
 }

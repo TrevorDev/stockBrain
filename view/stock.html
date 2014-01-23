@@ -62,7 +62,7 @@
 		<div class="row mt centered">
 			<div class="col-lg-6 col-lg-offset-3" style="padding-bottom:50px;">
 				<h1>{{.Symbol}}</h1>
-				<h3>Recommendation: SELL</h3>
+				<h3>Recommendation: <span id="recommendation">{{.Recommendation}}</span></h3>
 			</div>
 		</div><!-- /row -->
 	</div><!-- /container -->
@@ -148,7 +148,15 @@
 			            console.log($("Connection closed."))
 			        }
 			        conn.onmessage = function(evt) {
-			        	data = addData(data,parseFloat(evt.data));
+			        	console.log(evt.data)
+			        	if(evt.data == "buy"){
+			        		$("#recommendation").html("BUY");
+			        	}else if(evt.data == "sell"){
+			        		$("#recommendation").html("SELL!");
+			        	}else{
+			        		data = addData(data,parseFloat(evt.data));
+			        	}
+			        	
 			        }
 			    } else {
 			        console.log($("Your browser does not support WebSockets."))
