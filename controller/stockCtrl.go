@@ -14,6 +14,7 @@ type Stock struct {
 func (c Stock)StockHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var rec string
+	
 	if(model.Stock{}).BuyRecommend(vars["symbol"]){
 		rec = "BUY"
 	}else{

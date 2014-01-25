@@ -35,14 +35,13 @@ func runServer() {
 }
 
 func main() {
+	database.InitDatabase()
 	stock := model.Stock{}
 	//runtime.GOMAXPROCS(runtime.NumCPU())
 	go runServer()
-	database.InitDatabase()
 	startTime := time.Now()
-	stock.BuyRecommend("GOOG")
-	stock.PullStocks()
 	fmt.Println("stockBrain started - "+strconv.Itoa(startTime.Hour()))
+	stock.PullStocks()
 }
 
 
